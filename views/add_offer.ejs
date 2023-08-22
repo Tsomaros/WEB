@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/add_offer.css">
+    
+    <title>Document</title>
+</head>
+
+
+
+<body>
+
+  <div class="serch-box">
+    <div class="row">
+        <input type="text" id="input-box" placeholder="Search Product" autocomplete="off">
+        <button>Search</button>
+    </div>
+  </div>
+  <div id="productList"></div>
+  <br></br>
+
+
+<script>
+
+  var Product = <%- JSON.stringify(product) %>;
+  var Cat_Sub = <%- JSON.stringify(ctg_name) %>;
+
+
+  function Categories(){
+    let categories = ``
+      let tempcat = ` <div class="create-offer1" id="create-offer1">
+          <label for="category">Choose a category: </label>
+          <select name="category" id="category" onchange="Sub_Cat()">
+            <% ctg_name.forEach(element => { %>
+              <option></option>
+              <option value ='<%= element.name %>'><%= element.name %></option>
+            <% }) %>
+          </select>
+          <br><br>
+          </div> `
+
+        categories = categories.concat(tempcat)
+        
+
+    document.write(categories)
+
+  }
+
+  function Sub_Cat(){
+
+    let sub_categories = ``
+    let label = `<label for="sub_cat">Choose a subcategory:</label>
+          <select name="sub-cat" id="sub-cat" onchange="findPr()">`
+    sub_categories = sub_categories.concat(label)
+
+    category = document.querySelector('#category');
+    categ = category.value;
+
+    Cat_Sub.forEach(element => {
+          if (element.name == categ){
+          for (const sub of element.subcategories){
+            let option = ` <option></option>
+            <option value ='${sub.uuid}'><${sub.name}></option>`
+
+            sub_categories = sub_categories.concat(option)
+            }
+          }
+        })
+
+         let tempSub = `</select><br><br>`
+
+
+         sub_categories = sub_categories.concat(tempSub)
+          var x = document.getElementById("create-offer1")
+          x.innerHTML = `${sub_categories}`
+  }
+
+  function findPr(){
+    uuid = document.querySelector('#sub-cat');
+    uuid = uuid.value;
+
+    let product = ``
+    let head = `<form action="/add_offer" method="POST">
+          
+
+          <label for="product">Choose a Product: </label>
+          <select name="product" id="product">`
+
+            product = product.concat(head)
+
+    Product.forEach(element => {
+            if (element.subcategory == uuid){
+              let tempProduct = `
+              <option value ='${element.name }'>${element.name }</option>`
+
+          product = product.concat(tempProduct)
+
+            }
+        })
+
+        let foot = `</select>
+
+                          <br><br>
+
+                        <label for="new-value">New Value: </label>
+                        <input type="number" name="new_value" id="new_value" required>
+
+                        <input type="hidden" name="Sup_id" id="Sup_id" value="<%= Sup_id %>"> 
+
+                        <button id="find_Product">Add Offer</button>
+                            </form>
+                            <br><br>
+                                  `
+                    product = product.concat(foot)
+
+          var x = document.getElementById("create-offer1")
+          x.innerHTML = `${product}`
+  }
+  
+Categories()
+
+
+    const charactersList = document.getElementById('productList');
+    const searchBar = document.getElementById('input-box');
+    let hpCharacters = [];
+
+    searchBar.addEventListener('keyup', (e) => {
+
+    const searchString = e.target.value.toLowerCase();
+
+    const filteredCharacters = Product.filter((product) => {
+        return (
+            product.name.toLowerCase().includes(searchString)
+        );
+    });
+    displayCharacters(filteredCharacters);
+
+});
+
+const displayCharacters = (product) => {
+    const htmlString = product
+        .map((product) => {
+            return `
+            <div id="productList"></div>
+              <form action="/add_offer" method="POST">
+                
+                <h2>${product.name}</h2>
+                <label for="new-value">New Value: </label>
+                        <input type="number" name="new_value" id="new_value" required>
+
+                        <input type="hidden" name="Sup_id" id="Sup_id" value="<%= Sup_id %>"> 
+                        <input type="hidden" name="product" id="product" value="${product.name}">
+
+                        <button id="find_Product">Add Offer</button>
+
+                          </form>
+                        </div>
+                        <br></br>
+           
+        `;
+        })
+        .join('');
+    charactersList.innerHTML = htmlString;
+      }
+
+
+</script>
+
+</body>
+</html>
