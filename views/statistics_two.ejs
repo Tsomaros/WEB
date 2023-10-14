@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Title</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        font-family: sans-serif;
+      }
+      .chartMenu {
+        width: 100vw;
+        height: 40px;
+        background: #1A1A1A;
+        color: rgba(54, 162, 235, 1);
+      }
+      .chartMenu p {
+        padding: 10px;
+        font-size: 20px;
+      }
+      .chartCard {
+        width: 100vw;
+        height: calc(100vh - 40px);
+        background: rgba(54, 162, 235, 0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .chartBox {
+        width: 700px;
+        padding: 20px;
+        border-radius: 20px;
+        border: solid 3px rgba(54, 162, 235, 1);
+        background: white;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="chartMenu">
+      <a href="/admin_home">Go home</a>
+    </div>
+    <div class="chartCard">
+      <div class="chartBox">
+        <canvas id="myChart"></canvas>
+        <form action="/statistics_two" method="get">
+        Εβδομάδες πίσω:
+        <input type="number" name="weeksback" id="weeksback" step="any"">
+        <div id="productList"></div>
+        <br></br>
+        <div id="categ"></div>
+        <div id="subcat"></div>
+        <div id="prod"></div>
+        <button id="weeksbackbutton" >Submit</button></form>
+        </div>
+    </div>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js/dist/chart.umd.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+
+    <script>
+
+    var startDate = <%- JSON.stringify(startDate) %>; 
+
+    var endDate = <%- JSON.stringify(endDate) %>; 
+
+    var discountlist = <%- JSON.stringify(discountlist) %>;
+
+    var weeklabels = <%- JSON.stringify(weeklabels) %>; 
+
+    var Cat_Sub = <%- JSON.stringify(ctg_name) %>;
+
+    const data = {
+      labels: weeklabels,
+      datasets: [{
+        label: 'Ποσοστό μέσης έκπτωσης',
+        data: discountlist,
+        backgroundColor: [
+          'rgba(255, 26, 104, 0.2)',
+          'rgba(54, 162, 235, 0.2)',
+          'rgba(255, 206, 86, 0.2)',
+          'rgba(75, 192, 192, 0.2)',
+          'rgba(153, 102, 255, 0.2)',
+          'rgba(255, 159, 64, 0.2)',
+          'rgba(0, 0, 0, 0.2)'
+        ],
+        borderColor: [
+          'rgba(255, 26, 104, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 159, 64, 1)',
+          'rgba(0, 0, 0, 1)'
+        ],
+        borderWidth: 1
+      }]
+    };
+
+    // config 
+    const config = {
+      type: 'bar',
+      data,
+      options: {
+        scales: {
+            x: {
+                min: startDate,
+                max: endDate,
+                type: 'time',
+                time: {
+                    unit: 'day'
+                },
+            },
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    };
+
+    const myChart = new Chart(
+      document.getElementById('myChart'),
+      config
+    );
+
+    function filterChart(date) {
+      console.log(date.value)
+ 
+
+
+    }
+
+    function Categories(){
+    let categories = ``
+      let tempcat = ` <div class="create-offer1" id="create-offer1">
+          <label for="category">Choose a category: </label>
+          <select name="category" id="category" onchange="Sub_Cat()">
+            <% ctg_name.forEach(element => { %>
+              <option></option>
+              <option value ='<%= element.id %>'><%= element.name %></option>
+            <% }) %>
+          </select>
+          <br><br>
+          </div> `
+
+        categories = categories.concat(tempcat)
+
+        var y = document.getElementById("categ")
+          y.innerHTML = `${categories}`
+
+  }
+
+  function Sub_Cat(){
+
+    let sub_categories = ``
+    let label = `<label for="sub_cat">Choose a subcategory:</label>
+          <select name="subcat" id="sub-cat" >`
+    sub_categories = sub_categories.concat(label)
+
+    category = document.querySelector('#category');
+    categ = category.value;
+
+    var k = document.getElementById("prod")
+          k.innerHTML = ``
+
+    if(categ == ""){
+      var x = document.getElementById("subcat")
+          x.innerHTML = ``
+      var k = document.getElementById("prod")
+          k.innerHTML = ``
+      return ""
+    }
+
+    Cat_Sub.forEach(element => {
+          if (element.id == categ){
+          for (const sub of element.subcategories){
+            let option = ` <option></option>
+            <option value ='${sub.uuid}'>${sub.name}</option>`
+            sub_categories = sub_categories.concat(option)
+            }
+          }
+        })
+
+         let tempSub = `</select><br><br>`
+
+
+         sub_categories = sub_categories.concat(tempSub)
+          var x = document.getElementById("subcat")
+          x.innerHTML = `${sub_categories}`
+  }
+
+  Categories()
+
+
+    </script>
+
+  </body>
+</html>

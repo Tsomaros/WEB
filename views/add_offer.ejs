@@ -4,14 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/add_offer.css">
+    <link rel="icon" href="/icons/bangiconpurple.png" type="image/x-icon"/> 
     
-    <title>Document</title>
+    <title>Offers</title>
 </head>
 
 
 
 <body>
-
+  <img class="logo" src="/banglogopurple.png" alt="logo">
+    <br><br><br>
+  
+  <h1>Αναζήτηση προϊόντος</h1>
+  <a href="/user_profile">My Profile</a>
+  <a href="/user_home">Go home</a>  
   <div class="serch-box">
     <div class="row">
         <input type="text" id="input-box" placeholder="Search Product" autocomplete="off">
@@ -20,14 +26,18 @@
   </div>
   <div id="productList"></div>
   <br></br>
+  <div id="categ"></div>
+  <div id="subcat"></div>
+  <div id="prod"></div>
 
 
 <script>
 
+  //Get Products and Categories/Subcategories form the server
   var Product = <%- JSON.stringify(product) %>;
   var Cat_Sub = <%- JSON.stringify(ctg_name) %>;
 
-
+  //Function that returns a dropdown menu with all the categories  
   function Categories(){
     let categories = ``
       let tempcat = ` <div class="create-offer1" id="create-offer1">
@@ -42,28 +52,43 @@
           </div> `
 
         categories = categories.concat(tempcat)
-        
 
-    document.write(categories)
+          //Returs dropdown menu to div with id == categ
+          var y = document.getElementById("categ")
+          y.innerHTML = `${categories}`
 
   }
 
+//Function that returns a dropdown menu with all the subcategories based on the category
   function Sub_Cat(){
 
     let sub_categories = ``
     let label = `<label for="sub_cat">Choose a subcategory:</label>
           <select name="sub-cat" id="sub-cat" onchange="findPr()">`
     sub_categories = sub_categories.concat(label)
-
+    
+    //Gets the value from the category dropdown menu
     category = document.querySelector('#category');
     categ = category.value;
 
+    var k = document.getElementById("prod")
+          k.innerHTML = ``
+    
+    //If the categories bropdown menu is empty hide the subcategories bropdown menu and products bropdown menu
+    if(categ == ""){
+      var x = document.getElementById("subcat")
+          x.innerHTML = ``
+      var k = document.getElementById("prod")
+          k.innerHTML = ``
+      return ""
+    }
+
+    //Create an option in the bropdown menu for every subcategory for the selected category
     Cat_Sub.forEach(element => {
           if (element.name == categ){
           for (const sub of element.subcategories){
             let option = ` <option></option>
-            <option value ='${sub.uuid}'><${sub.name}></option>`
-
+            <option value ='${sub.uuid}'>${sub.name}</option>`
             sub_categories = sub_categories.concat(option)
             }
           }
@@ -73,13 +98,24 @@
 
 
          sub_categories = sub_categories.concat(tempSub)
-          var x = document.getElementById("create-offer1")
+
+         //Returs dropdown menu to div with id == subcat
+          var x = document.getElementById("subcat")
           x.innerHTML = `${sub_categories}`
   }
 
+  //Function that returns a dropdown menu with all the Products based on the subcategory
   function findPr(){
+    //Gets the value from the subcategory dropdown menu
     uuid = document.querySelector('#sub-cat');
     uuid = uuid.value;
+
+    //If the subcategory bropdown menu is empty hide the product bropdown menu
+    if(uuid == ""){
+      var k = document.getElementById("prod")
+          k.innerHTML = ``
+          return""
+    }
 
     let product = ``
     let head = `<form action="/add_offer" method="POST">
@@ -90,24 +126,28 @@
 
             product = product.concat(head)
 
+    //Create an option in the bropdown menu for every product that belongs in the selected subcategory
     Product.forEach(element => {
             if (element.subcategory == uuid){
               let tempProduct = `
-              <option value ='${element.name }'>${element.name }</option>`
+              <option></option>
+              <option value ='${element.name}|${element.id}'>${element.name}</option>
+              <br></br>`
 
-          product = product.concat(tempProduct)
+
+              product = product.concat(tempProduct)
 
             }
         })
-
+       
         let foot = `</select>
 
                           <br><br>
 
                         <label for="new-value">New Value: </label>
-                        <input type="number" name="new_value" id="new_value" required>
+                        <input type="number" name="new_value" id="new_value" step="any" required>
 
-                        <input type="hidden" name="Sup_id" id="Sup_id" value="<%= Sup_id %>"> 
+                        <input type="hidden" name="Sup_id" id="Sup_id" value="<%= Sup_id %>">
 
                         <button id="find_Product">Add Offer</button>
                             </form>
@@ -115,22 +155,29 @@
                                   `
                     product = product.concat(foot)
 
-          var x = document.getElementById("create-offer1")
-          x.innerHTML = `${product}`
+          //Returs dropdown menu to div with id == prod
+          var k = document.getElementById("prod")
+          k.innerHTML = `${product}`
   }
   
 Categories()
 
 
+    //For the search bar
     const charactersList = document.getElementById('productList');
     const searchBar = document.getElementById('input-box');
     let hpCharacters = [];
 
-    searchBar.addEventListener('keyup', (e) => {
 
+    searchBar.addEventListener('keyup', (e) => {
+    
     const searchString = e.target.value.toLowerCase();
 
     const filteredCharacters = Product.filter((product) => {
+      //If the search bar is empty display nothing
+      if(searchString == ""){
+        return ""
+      }//Else return the products that match
         return (
             product.name.toLowerCase().includes(searchString)
         );
@@ -139,19 +186,21 @@ Categories()
 
 });
 
+//Function that return the products that match with the string you write
 const displayCharacters = (product) => {
     const htmlString = product
         .map((product) => {
+          //Returns the procucts wit an input form to add the offer value 
             return `
             <div id="productList"></div>
               <form action="/add_offer" method="POST">
                 
                 <h2>${product.name}</h2>
                 <label for="new-value">New Value: </label>
-                        <input type="number" name="new_value" id="new_value" required>
+                        <input type="number" name="new_value" id="new_value" step="any" required>
 
                         <input type="hidden" name="Sup_id" id="Sup_id" value="<%= Sup_id %>"> 
-                        <input type="hidden" name="product" id="product" value="${product.name}">
+                        <input type="hidden" name="product" id="product" value="${product.name}|${product.id}">
 
                         <button id="find_Product">Add Offer</button>
 

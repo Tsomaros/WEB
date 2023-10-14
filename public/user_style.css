@@ -4,14 +4,82 @@ padding: 0px;
 box-sizing: border-box;
 }
 html{
-    scroll-behavior: smooth;
+  scroll-behavior: smooth;
+  background: url('supermar.jpg') no-repeat center center fixed;
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 #map {
     width: 50%;
     height: 500px;
     z-index: 10;
+   
   }
 body{
+max-width: 1500px;
+margin: 20px auto;
 font-family: 'Myfont';
 font-size: 15px;
+
+}
+.leaflet-popup-content {
+	overflow-y:scroll;
+	max-height:200px;
+	margin: 13px 19px;
+	line-height: 1.4;
+	}
+#productList{
+  display: flex;
+  flex-wrap: wrap;
+}
+select{
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  height: 20px;
+  cursor: pointer;
+}
+button{
+    cursor: pointer;
+}
+form{
+  text-align: right;
+  margin: 3px;
+}
+div a{
+  display: flex;
+  text-align: left;
+  margin: 2px;
+  padding: 2px;
+  background: #ffffff;
+  border: solid #000000;
+  cursor: pointer;
+  opacity: 50%;
+  
+}
+/* div{
+  display: flex;
+  flex-wrap: wrap;
+} */
+
+
+label{
+  height: 25px;
+    
+}
+a{
+  margin: 2px;
+  padding: 2px;
+  background: #fffb00;
+  border: solid #000000;
+  opacity: 50%;
+cursor: pointer;
+ 
+}
+img {
+  overflow-clip-margin: content-box;
+  overflow: clip;
+margin: auto;
+position: absolute;
+top: 0;
 }

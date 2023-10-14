@@ -3,9 +3,9 @@
     padding: 0;
 }
 html { 
-  background: url('citywatch.png') no-repeat center center fixed; 
-  background-size: cover;
-  background-repeat: no-repeat;
+	background: url('citywatch.png') no-repeat center center fixed; 
+  	background-size: cover;
+  	background-repeat: no-repeat;
 }
 body{
     display: flex;
@@ -14,6 +14,13 @@ body{
     min-height: 100vh;
     box-shadow: 5px 20px 50px #000;
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+img {
+    overflow-clip-margin: content-box;
+    overflow: clip;
+	margin: auto;
+	position: absolute;
+	top: 0;
 }
 
 
@@ -120,3 +127,4 @@ button{
 #su_check:checked ~.signup{
   transform: translateY(50px);
 }
+

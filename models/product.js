@@ -10,7 +10,7 @@ const productSchema = new Schema({
         type: String,
         required: true
     },
-    catergory: {
+    category: {
         type: String,
         required: false
     },
@@ -26,8 +26,13 @@ const productSchema = new Schema({
             required: true
         },
         price:{
-            type: String,
+            type: Number,
             required: true
+        },
+        avg_price:{
+            type: Number,
+            required: false,
+            default: 0
         }
 }})
 

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8"> 
+    <link rel="stylesheet" href="/add_products.css">
+    <link rel="icon" href="/icons/bangiconpurple.png" type="image/x-icon"/>
+    <title>Add Prices</title>
+</head>
+<body>
+    <img class="logo" src="banglogopurple.png" alt="logo">
+    <br><br><br>
+    <a href="/user_home">Home page</a> 
+    <form>
+        <div>
+            <label for="prices">Add Prices:</label>
+            <input type="file" name="prices" id="prices">
+        </div>
+        <button type="submit">Submit</button>
+
+    </form>
+
+<script>
+    //Add an EventListener to the file apload form on submit
+    const form = document.querySelector('form');
+    form.addEventListener('submit', (e) => {
+    
+    e.preventDefault();
+
+    
+    const Price = document.getElementById("prices");
+    const priceData = new FormData();
+        
+    //Get All uploaded files 
+    for(let i =0; i < Price.files.length; i++) {
+        priceData.append("Price", Price.files[i]);
+    }
+
+    //Sends a Post request to server with the file data as body
+    fetch('/add_product_prices', {
+        method: 'POST',
+        body: priceData, 
+    })
+    .then(res => res.json())
+    .then(data =>{
+        var d = JSON.stringify(data)
+        var x = JSON.parse(d)
+       alert(x.error)
+    })
+
+
+})
+
+</script>
+
+</body>
+</html>

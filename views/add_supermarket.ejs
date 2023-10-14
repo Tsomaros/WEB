@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8"> 
+    <link rel="stylesheet" href="/add_products.css">
+    <link rel="icon" href="/icons/bangiconpurple.png" type="image/x-icon"/> 
+    <title>Add Supermarkets</title>
+</head>
+<body>
+    <img class="logo" src="banglogopurple.png" alt="logo">
+    <br><br><br>
+    <a href="/user_home">Home page</a>
+    <form>
+        <div>
+            <label for="file">Add Supermarket:</label>
+            <input type="file" name="file" id="super_files">
+        </div>
+        <button type="submit">Submit</button>
+    </form>
+
+    <br></br>
+    <div id="delete_all">
+        <label for="delete">Delete All Supermarkets:</label>
+        <button id="delete_btn" onclick="Sure()">Delete</button>
+    </div>
+<script>
+    //Add an EventListener to the file apload form on submit
+    const form = document.querySelector('form');
+    form.addEventListener('submit', (e) => {
+    
+    e.preventDefault();
+
+
+    const Supermarket = document.getElementById("super_files");
+    const formData = new FormData();
+
+    //Get All uploaded files 
+    for(let i =0; i < Supermarket.files.length; i++) {
+        formData.append("files", Supermarket.files[i]);
+    }
+
+    //Sends a Post request to server with the file data as body
+    fetch('/add_supermarket', {
+        method: 'POST',
+        body: formData, 
+    })
+    .then(res => res.json())
+    .then(data =>{
+        var d = JSON.stringify(data)
+        var x = JSON.parse(d)
+       alert(x.error)
+    })
+
+
+})
+
+//Makes the user confirm if he wants to delete everything
+function Sure(){
+    const del = document.getElementById("delete_all")
+    let sure = `<label for="delete">Are you sure:</label>
+                <button id="Yes" onclick="delete_all()">Yes</button>
+                <button id="Cansel" onclick="reload()">Cancel</button>
+                `
+
+    del.innerHTML = `${sure}`
+}
+
+//Reloads the page 
+function reload(){
+    location.reload();
+}
+
+//Sends a Post request to server and deletes every supermarket
+function delete_all(){
+    fetch('/delete_supermarket', {
+        method: 'POST',
+    }).then(alert("All Supermarkets deleted"))
+    .then(location.reload())
+}
+
+</script>
+
+</body>
+</html>
