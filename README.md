@@ -197,7 +197,3 @@ This repository is intended as an academic/development project. Before using it 
 - Review authentication and authorization logic.
 - Enable secure cookies and HTTPS in production.
 - Validate and sanitize uploaded files and user input.
-
-## License
-
-This project does not currently specify a formal open-source license.
