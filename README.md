@@ -186,14 +186,3 @@ node server.js
 ```
 
 Additional JavaScript utilities are included for generating and updating users, prices, products, and offers.
-
-## Security Note
-
-This repository is intended as an academic/development project. Before using it in a production environment:
-
-- Move database connection strings to environment variables.
-- Use strong, environment-specific session secrets.
-- Do not commit credentials or other sensitive information.
-- Review authentication and authorization logic.
-- Enable secure cookies and HTTPS in production.
-- Validate and sanitize uploaded files and user input.
